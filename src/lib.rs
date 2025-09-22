@@ -4,7 +4,7 @@
 //! # Quick start
 //! ```no_run
 //! use anyhow::Result;
-//! use rmq_wrappers::{Rmq, RmqQueue};
+//! use rmq_wrappers:z:{Rmq, RmqQueue};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
@@ -62,8 +62,8 @@ pub struct RmqQueue {
 impl Rmq {
     /// Connects to RabbitMQ.
     ///
-    /// The URL typically looks like `amqp://user:pass@host:5672/%2f`.
-    pub async fn create(amqp_url: &str) -> Result<Self> {
+    /// The URL typically looks like `amqp://user:pass@host:5672`.
+    pub async fn connect(amqp_url: &str) -> Result<Self> {
         let conn = Connection::connect(amqp_url, ConnectionProperties::default()).await?;
         Ok(Self { conn })
     }
