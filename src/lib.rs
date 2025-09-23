@@ -53,7 +53,7 @@ pub struct RmqChannel {
 /// Use [`publish`](RmqQueue::publish) to send messages to the *default exchange*
 /// (`""`) with the queue name as the routing key. This is convenient when you
 /// don’t need custom exchanges for a class/demo.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct RmqQueue {
     channel: Channel,
     queue: Queue,
