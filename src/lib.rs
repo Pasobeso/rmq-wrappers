@@ -28,15 +28,15 @@ use lapin::{
     types::FieldTable,
 };
 use serde::Serialize;
-use std::fmt::Debug;
+use std::{fmt::Debug, sync::Arc};
 
 /// Thin wrapper over a `lapin::Connection`.
 ///
 /// Keep this alive for the lifespan of your app. Create channels per logical
 /// producer/consumer (channels are cheap to clone).
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Rmq {
-    conn: Connection,
+    conn: Arc<Connection>,
 }
 
 /// Wrapper over a `lapin::Channel`.
@@ -64,7 +64,7 @@ impl Rmq {
     ///
     /// The URL typically looks like `amqp://user:pass@host:5672`.
     pub async fn connect(amqp_url: &str) -> Result<Self> {
-        let conn = Connection::connect(amqp_url, ConnectionProperties::default()).await?;
+        let conn = Arc::new(Connection::connect(amqp_url, ConnectionProperties::default()).await?);
         Ok(Self { conn })
     }
 
