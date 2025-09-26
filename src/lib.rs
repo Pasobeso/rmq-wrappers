@@ -166,6 +166,26 @@ impl RmqQueue {
         Ok(())
     }
 
+    /// Publishes a message in plaintext to the **default exchange** (`""`) using the queue name as routing key.
+    /// As `delivery_mode = 2` (persistent), messages survive broker restarts **if** stored on a durable queue.
+    ///
+    /// # Reliability
+    /// This awaits the broker’s **publisher confirm** to ensure the message was accepted.
+    pub async fn publish_plain(&self, message: &str) -> Result<()> {
+        self.channel
+            .basic_publish(
+                "",          // default direct exchange
+                self.name(), // routing key = queue name
+                BasicPublishOptions::default(),
+                message.as_bytes(),
+                BasicProperties::default().with_delivery_mode(2), // persistent message
+            )
+            .await?
+            .await?; // wait for broker confirm
+
+        Ok(())
+    }
+
     /// Deletes the queue.
     ///
     /// Defaults: `if_unused = false`, `if_empty = false`.
